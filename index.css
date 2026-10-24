@@ -1,0 +1,193 @@
+@import "tailwindcss";
+
+@theme {
+  --color-paper: #f2f2f2;
+  --color-ink: #111111;
+  --color-ink-soft: #1e1e1e;
+  --color-mute: #838282;
+  --color-faint: #b6b5b5;
+  --color-echo-1: #bfbfbf;
+  --color-echo-2: #c9c9c9;
+  --color-echo-3: #d1d1d1;
+  --color-echo-4: #d9d9d9;
+
+  --font-display: "Clash Display", "Satoshi", ui-sans-serif, system-ui, sans-serif;
+  --font-body: "Satoshi", ui-sans-serif, system-ui, sans-serif;
+  --font-accent: "Fraunces", Georgia, serif;
+
+  --ease-swiss: cubic-bezier(0.77, 0, 0.175, 1);
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 96px;
+}
+
+body {
+  background-color: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-body);
+  font-weight: 500;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+::selection {
+  background: var(--color-ink);
+  color: var(--color-paper);
+}
+
+/* ---------- Focus visibility ---------- */
+:focus-visible {
+  outline: 2px solid var(--color-ink);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+/* ---------- Typographic echo stack ---------- */
+.echo {
+  position: relative;
+  display: inline-block;
+}
+.echo .echo-main {
+  position: relative;
+  z-index: 5;
+  color: var(--color-ink);
+}
+.echo .echo-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  user-select: none;
+  z-index: 1;
+}
+.echo .e1 {
+  transform: translate(-0.04em, -0.04em);
+  color: var(--color-echo-1);
+  z-index: 4;
+}
+.echo .e2 {
+  transform: translate(-0.08em, -0.08em);
+  color: var(--color-echo-2);
+  z-index: 3;
+}
+.echo .e3 {
+  transform: translate(-0.12em, -0.12em);
+  color: var(--color-echo-3);
+  z-index: 2;
+}
+.echo .e4 {
+  transform: translate(-0.16em, -0.16em);
+  color: var(--color-echo-4);
+  z-index: 1;
+}
+
+/* ---------- Marquee ---------- */
+@keyframes marquee-x {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+.marquee-track {
+  animation: marquee-x 36s linear infinite;
+  will-change: transform;
+}
+.marquee:hover .marquee-track {
+  animation-play-state: paused;
+}
+
+/* ---------- Scroll reveals ---------- */
+.reveal {
+  opacity: 0;
+  transform: translateY(26px);
+  transition:
+    opacity 0.7s var(--ease-swiss),
+    transform 0.7s var(--ease-swiss);
+}
+.reveal.in {
+  opacity: 1;
+  transform: none;
+}
+.reveal-clip {
+  clip-path: inset(0 0 100% 0);
+  transition: clip-path 0.7s var(--ease-swiss);
+}
+.reveal-clip.in {
+  clip-path: inset(0 0 0% 0);
+}
+
+/* ---------- Ambient background texture ---------- */
+.bg-grain {
+  background-image: radial-gradient(rgba(17, 17, 17, 0.055) 1px, transparent 1px);
+  background-size: 22px 22px;
+}
+.bg-diagonal {
+  background-image: repeating-linear-gradient(
+    -45deg,
+    rgba(30, 30, 30, 0.06) 0,
+    rgba(30, 30, 30, 0.06) 1px,
+    transparent 1px,
+    transparent 9px
+  );
+}
+
+/* ---------- Project visual hover ---------- */
+.project-visual {
+  filter: grayscale(20%);
+  transform: scale(1);
+  transition:
+    filter 0.7s var(--ease-swiss),
+    transform 0.7s var(--ease-swiss);
+}
+.group:hover .project-visual,
+.group:focus-visible .project-visual {
+  filter: grayscale(0%);
+  transform: scale(1.05);
+}
+
+/* ---------- Dialog ---------- */
+dialog::backdrop {
+  background: rgba(17, 17, 17, 0.55);
+  backdrop-filter: blur(4px);
+}
+@keyframes dialog-in {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+dialog[open] .dialog-panel {
+  animation: dialog-in 0.45s var(--ease-swiss);
+}
+
+/* ---------- Reduced motion ---------- */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .marquee-track {
+    animation: none;
+  }
+  .reveal,
+  .reveal-clip,
+  .project-visual {
+    transition: none;
+    opacity: 1;
+    transform: none;
+    clip-path: none;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
